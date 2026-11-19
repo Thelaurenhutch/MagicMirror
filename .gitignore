@@ -57,10 +57,16 @@ Temporary Items
 # Ignore all modules
 /modules/*
 
-# Ignore users config files but keep the samples.
+# Ignore users config files but keep the samples and env examples.
 config/*
+!config/config.js
 !config/config.js.sample
 !config/custom.css.sample
+!config/.env.example
+
+# Ignore .env files (they contain secrets!)
+.env
+modules/**/.env
 
 # Vim
 ## swap

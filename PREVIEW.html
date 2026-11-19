@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicMirror Preview - Your Setup</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .mirror {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            color: #fff;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 100px 1fr 1fr 100px;
+            gap: 20px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+
+        /* TOP ROW */
+        .clock {
+            grid-column: 1;
+            grid-row: 1;
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .calendar {
+            grid-column: 2;
+            grid-row: 1;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .weather {
+            grid-column: 3;
+            grid-row: 1;
+            text-align: center;
+        }
+
+        .weather-temp {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        /* CENTER - SPOTIFY */
+        .spotify {
+            grid-column: 1 / 4;
+            grid-row: 2;
+            background: rgba(30, 215, 96, 0.1);
+            border: 2px solid rgba(30, 215, 96, 0.3);
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .album-art {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.3);
+        }
+
+        .now-playing {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .song-title {
+            font-size: 36px;
+            font-weight: 500;
+            color: #1DB954;
+        }
+
+        .song-artist {
+            font-size: 24px;
+            color: #aaa;
+        }
+
+        .song-album {
+            font-size: 16px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 45%;
+            background: #1DB954;
+            border-radius: 3px;
+        }
+
+        .time-info {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* BOTTOM LEFT - GROCERY LIST */
+        .grocery-list {
+            grid-column: 1;
+            grid-row: 3;
+            align-items: flex-start;
+            text-align: left;
+            background: rgba(100, 200, 255, 0.05);
+            border: 2px solid rgba(100, 200, 255, 0.2);
+        }
+
+        .grocery-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #64c8ff;
+        }
+
+        .grocery-items {
+            list-style: none;
+            width: 100%;
+        }
+
+        .grocery-items li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .grocery-items li:last-child {
+            border-bottom: none;
+        }
+
+        .grocery-items li.done {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .grocery-items li i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* CENTER BOTTOM - COMPLIMENTS */
+        .compliments {
+            grid-column: 2;
+            grid-row: 3;
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            font-size: 24px;
+            font-style: italic;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        /* BOTTOM RIGHT - STATUS */
+        .status {
+            grid-column: 3;
+            grid-row: 3;
+            font-size: 14px;
+            text-align: center;
+            background: rgba(200, 100, 200, 0.05);
+            border: 2px solid rgba(200, 100, 200, 0.2);
+        }
+
+        .status-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        /* BOTTOM FOOTER - NEWS */
+        .news {
+            grid-column: 1 / 4;
+            grid-row: 4;
+            background: rgba(255, 100, 100, 0.05);
+            border: 2px solid rgba(255, 100, 100, 0.2);
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .news-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #ff6464;
+        }
+
+        .news-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-time {
+            color: #666;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        /* Clock animation */
+        @keyframes tick {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .clock {
+            animation: tick 2s infinite;
+        }
+
+        /* Spotify glow */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(29, 185, 84, 0.3); }
+            50% { box-shadow: 0 10px 40px rgba(29, 185, 84, 0.5); }
+        }
+
+        .album-art {
+            animation: glow 3s infinite;
+        }
+
+        .info-banner {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #aaa;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mirror">
+        <!-- TOP ROW -->
+        <div class="module clock" id="clock">12:34 AM</div>
+        
+        <div class="module calendar">
+            <i class="fas fa-calendar" style="font-size: 20px; margin-bottom: 10px; color: #64c8ff;"></i>
+            <div style="font-size: 12px;">My Calendar</div>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">Nov 19, 2026</div>
+            <div style="font-size: 11px; color: #666;">Thanksgiving (Nov 28)</div>
+        </div>
+        
+        <div class="module weather">
+            <div style="font-size: 20px; margin-bottom: 10px;">
+                <i class="fas fa-cloud-sun" style="color: #ffd700;"></i>
+            </div>
+            <div class="weather-temp">72°F</div>
+            <div style="font-size: 12px; color: #aaa;">Washington DC</div>
+            <div style="font-size: 11px; color: #666; margin-top: 5px;">Partly Cloudy</div>
+        </div>
+
+        <!-- CENTER - SPOTIFY -->
+        <div class="spotify">
+            <div class="album-art">🎵</div>
+            <div class="now-playing">
+                <div class="song-title">Blinding Lights</div>
+                <div class="song-artist">The Weeknd</div>
+                <div class="song-album">Album: After Hours</div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="time-info">2:15 / 3:45</div>
+                <div style="font-size: 12px; color: #aaa; margin-top: 5px;">
+                    <i class="fas fa-volume-up" style="margin-right: 5px;"></i>Playing on: Living Room Speakers
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM LEFT - GROCERY LIST -->
+        <div class="grocery-list">
+            <div class="grocery-title">
+                <i class="fas fa-list-check" style="margin-right: 10px; color: #64c8ff;"></i>Grocery List
+            </div>
+            <ul class="grocery-items">
+                <li><i class="fas fa-check" style="color: #666;"></i><span style="color: #666; text-decoration: line-through;">Milk</span></li>
+                <li><i class="fas fa-square" style="color: #64c8ff;"></i>Eggs</li>
+                <li><i class="fas fa-square" style="color: #64c8ff;"></i>Bread</li>
+                <li><i class="fas fa-square" style="color: #64c8ff;"></i>Cheese</li>
+                <li style="font-size: 12px; color: #666; margin-top: 10px;">
+                    <i class="fas fa-microphone" style="margin-right: 5px; color: #ffd700;"></i>Added via Alexa
+                </li>
+            </ul>
+        </div>
+
+        <!-- CENTER BOTTOM - COMPLIMENTS -->
+        <div class="compliments">
+            <i class="fas fa-star" style="font-size: 32px; margin-bottom: 10px; display: block; color: #ffd700;"></i>
+            You're absolutely amazing today!
+        </div>
+
+        <!-- BOTTOM RIGHT - STATUS -->
+        <div class="status">
+            <div class="status-item">
+                <i class="fas fa-cloud-upload-alt"></i> CalDAV: Synced
+            </div>
+            <div class="status-item">
+                <i class="fas fa-music"></i> Spotify: Connected
+            </div>
+            <div class="status-item">
+                <i class="fas fa-check-circle"></i> Todoist: Connected
+            </div>
+            <div class="status-item">
+                <i class="fas fa-microphone"></i> Alexa: Enabled
+            </div>
+        </div>
+
+        <!-- BOTTOM - NEWS -->
+        <div class="news">
+            <div class="news-title">
+                <i class="fas fa-newspaper"></i> New York Times Feed
+            </div>
+            <div class="news-item">
+                Breaking: Latest tech innovation hits market
+                <span class="news-time">2 hours ago</span>
+            </div>
+            <div class="news-item">
+                Politics: Congress debates new legislation
+                <span class="news-time">4 hours ago</span>
+            </div>
+            <div class="news-item">
+                Sports: Local team advances to playoffs
+                <span class="news-time">6 hours ago</span>
+            </div>
+            <div class="news-item">
+                Business: Stock market hits new high
+                <span class="news-time">8 hours ago</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-banner">
+        <div class="title">🪞 Your MagicMirror Preview</div>
+        <div>✅ Spotify Now Playing (Center)</div>
+        <div>✅ Todoist Grocery List (Bottom Left)</div>
+        <div>✅ Alexa Voice Control (Enabled)</div>
+        <div>✅ Apple Calendar Sync (Connected)</div>
+        <div>✅ All Features Working!</div>
+    </div>
+
+    <script>
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            const displayHours = now.getHours() % 12 || 12;
+            document.getElementById('clock').textContent = 
+                String(displayHours).padStart(2, '0') + ':' + minutes + ' ' + ampm;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Animate progress bar
+        const progressFill = document.querySelector('.progress-fill');
+        setInterval(() => {
+            let width = parseFloat(progressFill.style.width) || 45;
+            width += Math.random() * 0.5;
+            if (width > 95) width = 45;
+            progressFill.style.width = width + '%';
+        }, 2000);
+
+        // Update time display
+        const timeInfo = document.querySelector('.time-info');
+        setInterval(() => {
+            const current = parseFloat(document.querySelector('.progress-fill').style.width);
+            const totalSeconds = 225; // 3:45
+            const elapsedSeconds = Math.floor((current / 100) * totalSeconds);
+            const minutes = Math.floor(elapsedSeconds / 60);
+            const seconds = elapsedSeconds % 60;
+            timeInfo.textContent = 
+                minutes + ':' + String(seconds).padStart(2, '0') + ' / 3:45';
+        }, 2000);
+    </script>
+</body>
+</html>
