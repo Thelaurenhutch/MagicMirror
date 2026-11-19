@@ -150,14 +150,35 @@ const config = {
 			config: {
 				feeds: [
 					{
-						title: "New York Times",
-						url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+						title: "BBC News",
+						url: "https://feeds.bbci.co.uk/news/rss.xml"
+					},
+					{
+						title: "PBS NewsHour",
+						url: "https://www.pbs.org/newshour/feed"
+					},
+					{
+						title: "CNN International",
+						url: "https://feeds.cnn.com/rss/edition.rss"
+					},
+					{
+						title: "Weather & Science",
+						url: "https://feeds.bloomberg.com/markets/news.rss"
 					}
 				],
 				showSourceTitle: true,
 				showPublishDate: true,
+				showDescription: false,
+				scrolling: true,
+				updateInterval: 5 * 60 * 1000,
+				animationSpeed: 2500,
+				maxNewsItems: 10,
 				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
+				broadcastNewsUpdates: true,
+				removeStartTags: true,
+				removeEndTags: true,
+				startTags: ["POLITICS", "WORLD", "WEATHER", "SCIENCE"],
+				endTags: ["SPORTS"]
 			}
 		},
 	]
